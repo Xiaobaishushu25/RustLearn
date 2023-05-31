@@ -137,3 +137,24 @@ mod test_open{
         }
     }
 }
+#[cfg(test)]
+mod test_String{
+    #[test]
+    fn test(){
+        let mut s = String::from("test15 84 hel12llo");
+        let news:String = s.chars().map(|c|if c.is_ascii_digit() { "".to_string() }else { c.to_string() } ).collect();
+        println!("{news}");//test  helllo
+        let newss = s.replace(|c:char| c.is_ascii_digit(), "");
+        println!("{newss}");//test  helllo
+    }
+}
+#[cfg(test)]
+mod test_dref{
+    #[test]
+    fn test(){
+        let mut x = 5;
+        let mut y = &mut x;
+        *y = *y+1;
+        println!("Result is {}",y)
+    }
+}
