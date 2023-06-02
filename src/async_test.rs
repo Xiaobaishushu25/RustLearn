@@ -25,6 +25,7 @@ mod test_mutual_arc{
 #[cfg(test)]
 mod test_block{
     use std::{env, fs};
+    use std::fs::File;
     use std::path::{Path, PathBuf};
     use serde_yaml::Value;
     // fn toml2yaml(content:&str) -> Result<String>{
@@ -60,8 +61,31 @@ mod test_block{
         for s in args.iter(){
             println!("{s}")
         }
+        let sss = "sda";
+        let string = String::from("asdsad");
         let buf = env::current_dir().unwrap_or(PathBuf::from("/bin"));
         let cow = buf.to_string_lossy();
         println!("当前项目路径是{cow}")
+    }
+}
+#[cfg(test)]
+mod test_font{
+    use fonttools::font::{Font,Table};
+    #[test]
+    fn get_info(){
+        let font_file_path = "./FiraCode-Medium.ttf";
+        let font = Font::load(font_file_path).expect("Failed to load font");
+        if let Some(name_table) = font
+            .table_data(TableType::Name)
+            .expect("Failed to load name table")
+        {
+            for name_record in name_table.name_records() {
+                if name_record.name_id() == 1 {
+                    let font_family_name = name_record.to_string();
+                    println!("Font Family Name: {}", font_family_name);
+                    break;
+                }
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ pub mod async_test;
 pub mod ssh;
 pub mod test;
 pub mod TimerFuture;
+pub mod cow;
 // mod ui;
 // mod collection;
 // use lib::ssh_mod::Ssh;
