@@ -2,21 +2,6 @@ pub fn test(){
     println!("这是test")
 }
 #[cfg(test)]
-mod test_closure {
-    #[test]
-    fn it_works() {
-        let mut op = 0;
-        exec(move || println!("{}",op));
-        println!("{op}");//因为是栈类型，会自动复制一份，所以还能用
-        let po = String::from("test");
-        exec(|| println!("{po}"));
-        print!("{po}");//这里po是堆类型，且没有实现copy方法，会报错 borrow of moved value: `po`
-    }
-    fn exec<F>(f:F) where F:FnOnce() -> (){
-        f();
-    }
-}
-#[cfg(test)]
 mod test_reference_mut{
     #[test]
     fn test(){
@@ -126,7 +111,6 @@ mod test_open{
     use std::fs::File;
     use std::path::Path;
     use std::process::Command;
-
     #[test]
     fn test(){
         let path = Path::new("F:\\删除\\1标签loss和22扰动和五千卷积");

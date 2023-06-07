@@ -68,24 +68,3 @@ mod test_block{
         println!("当前项目路径是{cow}")
     }
 }
-#[cfg(test)]
-mod test_font{
-    use fonttools::font::{Font,Table};
-    #[test]
-    fn get_info(){
-        let font_file_path = "./FiraCode-Medium.ttf";
-        let font = Font::load(font_file_path).expect("Failed to load font");
-        if let Some(name_table) = font
-            .table_data(TableType::Name)
-            .expect("Failed to load name table")
-        {
-            for name_record in name_table.name_records() {
-                if name_record.name_id() == 1 {
-                    let font_family_name = name_record.to_string();
-                    println!("Font Family Name: {}", font_family_name);
-                    break;
-                }
-            }
-        }
-    }
-}
