@@ -92,9 +92,10 @@ mod test_arc {
     fn test_static_struct_leak(){
         static mut sp:Option<&mut MyPosition> = None;
         unsafe {
-            let p = Box::new(MyPosition::new(10,20));
+            let mut p = Box::new(MyPosition::new(10,20));
             sp = Some(Box::leak(p));
-            println!("{:?}",sp); //MyPosition { x: 10, y: 20 }
+            println!("{:?}",sp); //Some(MyPosition { x: 10, y: 20 })
+
             // match sp {
             //     Some(p) => {
             //         println!("{:?}",p)
@@ -102,7 +103,11 @@ mod test_arc {
             //     _ => {}
             // }
             // sp.unwrap().setX(20);
-            // println!("{:?}",sp); //MyPosition { x: 10, y: 20 }
+            let x:&mut &mut MyPosition = sp.as_mut().unwrap();
+            x.setY(50);
+            println!("{:?}",x); //MyPosition { x: 10, y: 50 }
+            // pos.setY(30);
+            println!("{:?}",sp.as_ref().unwrap()); //MyPosition { x: 10, y: 20 }
         }
     }
 
