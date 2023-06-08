@@ -11,6 +11,8 @@ pub mod cow;
 pub mod closure;
 pub mod  SmartPointer;
 pub mod Static;
+pub mod web;
+pub mod thread_pool;
 // mod ui;
 // mod collection;
 // use lib::ssh_mod::Ssh;
