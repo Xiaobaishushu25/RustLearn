@@ -2,7 +2,7 @@
 mod test_arc {
     use std::cell::{Cell, OnceCell, RefCell};
     use std::ops::Deref;
-    use std::sync::{Arc, Mutex};
+    use std::sync::{Arc, Mutex, OnceLock};
     use std::thread;
     use std::thread::Thread;
     use once_cell::sync::Lazy;
@@ -149,5 +149,59 @@ mod test_arc {
             x.setX(250);
             println!("{:?}",cell.get().unwrap()); //MyPosition { x: 250, y: 250 }
         }
+    }
+    #[derive(Debug)]
+    struct Op{
+        text:String,
+    }
+    impl Op {
+        fn new()->Self{
+            Op{
+                text:"hello".to_string()
+            }
+        }
+    }
+    #[test]
+    fn test_std_onceCell_static_op(){
+        static mut cell:OnceCell<Op> = OnceCell::new();
+        unsafe {
+            cell.get_or_init(||{
+                Op::new()
+            });
+            let option = cell.get();
+            println!("{:?}",option);
+            let handle = thread::spawn(|| {
+                let option1 = cell.get_mut().unwrap();
+                println!("{:?}", cell.get().unwrap());
+            });
+            handle.join().unwrap();
+        }
+    }
+    #[test]
+    fn test_std_onceLock_static_op(){
+        static  cell:OnceLock<Op> = OnceLock::new();
+        unsafe {
+            cell.get_or_init(|| {
+                Op::new()
+            });
+            let option2 = cell.get();
+            println!("{:?}",option2.unwrap())
+        }
+    }
+    #[test]
+    fn test_error(){
+        // static CACHE: OnceCell<Vec<i32>> = OnceCell::new();
+        // fn get_data() -> &'static Vec<i32> {
+        //     CACHE.get_or_init(|| {
+        //         let data = vec![1, 2, 3, 4, 5];
+        //         println!("Initializing cache");
+        //         data
+        //     })
+        // }
+        // let data = get_data();
+        // println!("Data: {:?}", data);
+        //
+        // let data = get_data();
+        // println!("Data: {:?}", data);
     }
 }
