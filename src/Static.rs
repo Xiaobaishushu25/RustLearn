@@ -161,6 +161,15 @@ mod test_arc {
             }
         }
     }
+    // 在你提供的代码中，你确实创建了两个并发线程，然后在这两个线程中调用了 cell.get_mut().unwrap() 方法，试图获取 OnceCell 的可变引用。
+    // 然而，这是一个很危险的操作，因为 OnceCell 并没有为并发环境提供正确的同步机制。实际上，根据 Rust 的文档，
+    // OnceCell::get_mut 方法在并发环境中的行为是未定义的。这就意味着你的代码可能会在某些情况下正常工作，但在其他情况下出错，或者产生不可预测的结果。
+    // 你的代码能够运行成功可能是因为线程调度的结果导致了数据竞态条件没有发生。这是因为两个线程可能没有在同一时间尝试获取 OnceCell 的
+    // 可变引用。然而，你不能依赖这种行为，因为线程调度的结果是非确定性的，它取决于很多因素，如操作系统的调度策略、系统的负载、CPU的数量等等。
+    // 这就是为什么你应该总是使用适当的同步原语来保护并发环境中的共享数据。在 Rust 中，这通常意味着使用诸如 Mutex 或 RwLock 这样的
+    // 类型来保护数据。如果你试图在没有适当同步的情况下访问共享数据，那么你的代码可能会在某些情况下工作，但在其他情况下出错，或者产生不可预测的结果。
+    // 对于你的代码，如果你希望在多个线程中共享和修改 Op 实例，你应该使用 Mutex<Op> 或者 RwLock<Op> 来代替 OnceCell<Op>。这
+    // 样可以保证在任何时候只有一个线程可以修改 Op，而其他线程可以安全地读取 Op 的值。
     #[test]
     fn test_std_onceCell_static_op(){
         static mut cell:OnceCell<Op> = OnceCell::new();
@@ -170,11 +179,20 @@ mod test_arc {
             });
             let option = cell.get();
             println!("{:?}",option);
-            let handle = thread::spawn(|| {
-                let option1 = cell.get_mut().unwrap();
-                println!("{:?}", cell.get().unwrap());
-            });
-            handle.join().unwrap();
+            let mut vec = Vec::with_capacity(300);
+            for index in 0..10000{
+                let handle = thread::spawn(move|| {
+                    let option1 = cell.get_mut().unwrap();
+                    println!("第{index} {:?}", cell.get().unwrap());
+                });
+                vec.push(handle);
+            }
+            for h in vec{
+                h.join().unwrap();
+            }
+            let option2 = cell.get();
+            println!("{:?}",option2)
+            // handle.join().unwrap();
         }
     }
     #[test]

@@ -142,3 +142,74 @@ mod test_dref{
         println!("Result is {}",y)
     }
 }
+#[cfg(test)]
+mod test_option{
+    //这俩方法好像没啥区别，都是转换后返回一个Option
+    #[test]
+    fn test(){
+        let option1 = Option::Some(1);
+        let new_option = option1.and_then(|value| {
+            Option::Some(value + 1)
+        });
+        println!("{:?}",new_option);
+        let option2: Option<i32> = Option::Some(2);
+        let x = option2.map(|value| {
+            value + 1
+        }).map(|value|{
+            value.to_string()
+        });
+        println!("{:?}",x);
+        let option3 = Some("hello|world".to_string());
+        let new_option3 = option3.map(|it| {
+            let vecx:Vec<String> = it.split("|").map(|it|{it.to_string()}).collect();
+            vecx
+        });
+        println!("{:?}",new_option3);
+        let option4 = Some("hello|world".to_string());
+        // let new_option3 = option4.and_then(|it| {
+        //     let vecx:Vec<String> = it.split("|").collect();
+        //     vecx
+        // });
+        // println!("{:?}",new_option3)
+    }
+}
+#[cfg(test)]
+mod test_scope{
+    use std::thread;
+    use std::time::Duration;
+
+    struct SomeThing {
+        msg: String
+    }
+
+    impl SomeThing {
+        fn print(&self) {
+            println!("{}", self.msg);
+        }
+        fn do_something(&self) {
+            let mut s = "sd";
+            //scope可以实现多个线程借用同一个变量，好像是个阻塞的，会将当前线程阻塞到结束
+            thread::scope(|t|{
+                let mut children = vec![];
+                for _ in 0..10 {
+                    children.push(t.spawn( || {
+                        thread::sleep(Duration::new(10,0));
+                        self.print();
+                    }));
+                }
+                // for child in children {
+                //     let _ = child.join();
+                // }
+            });
+            print!("函数结束");
+            // for child in children {
+            //     let _ = child.join();
+            // }
+        }
+    }
+    #[test]
+    fn test(){
+        let sth = SomeThing{msg: String::from("hi")};
+        sth.do_something();
+    }
+}

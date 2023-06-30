@@ -15,6 +15,7 @@ pub mod web;
 pub mod thread_pool;
 pub mod TestMacro;
 pub mod CheckTrait;
+pub mod TestInto;
 // mod ui;
 // mod collection;
 // use lib::ssh_mod::Ssh;
