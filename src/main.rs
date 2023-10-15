@@ -16,6 +16,9 @@ pub mod thread_pool;
 pub mod TestMacro;
 pub mod CheckTrait;
 pub mod TestInto;
+pub mod serde;
+mod error_handling;
+
 // mod ui;
 // mod collection;
 // use lib::ssh_mod::Ssh;

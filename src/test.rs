@@ -18,6 +18,7 @@ mod test_reference_mut{
         println!("改变后是{change}");
         let mut s = String::from("test");
         let mut d = String::from("hello");
+        // do6(&s);
         do6(&mut s);
         do7(&mut s,&mut d);
         println!("s改变之后是{s}")
@@ -49,8 +50,8 @@ mod test_reference_mut{
         c
     }
     fn do6(mut c: &mut String) {}
-    // fn do6(mut c: &String){ //error: cannot borrow `*c` as mutable, as it is behind a `&` reference
-    //     c.push_str("asd");
+    // fn do6(mut c: &String){
+    //     c.push_str("asd");//error: cannot borrow `*c` as mutable, as it is behind a `&` reference
     // }
     fn do7<'a>(mut c: &'a mut String,mut d: &'a mut String){
         c.push_str("asd");
@@ -211,5 +212,19 @@ mod test_scope{
     fn test(){
         let sth = SomeThing{msg: String::from("hi")};
         sth.do_something();
+    }
+    pub fn find_repeat_number(nums: Vec<i32>) -> i32 {
+        // let mut vec1:Vec<i32> = Vec::with_capacity(nums.len());
+        let mut vec1:Vec<i32> = vec![0;nums.len()];
+        println!("{}",nums.len());
+        for (i,num) in nums.into_iter().enumerate(){
+            vec1[num as usize] += 1;
+            if vec1[num as usize]>1 { return num}
+        }
+        -1
+    }
+    #[test]
+    fn test_find(){
+        let i = find_repeat_number(vec![2, 3, 1, 0, 2, 5, 3]);
     }
 }
