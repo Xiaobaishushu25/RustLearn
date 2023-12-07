@@ -2,7 +2,6 @@
 mod tests {
     use std::env;
     use std::fmt::Error;
-    use std::fs::{read, File};
     use syn::Path;
 
     fn double_arg(mut argv: env::Args) -> Result<i32, String> {
