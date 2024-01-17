@@ -7,7 +7,7 @@ mod storage {
     use std::sync::{Arc, RwLock};
 
     pub struct Storage {
-        data: RwLock<HashMap<u64, Arc<dyn Any>>>,
+        data: RwLock<HashMap<u64, Arc<dyn Any+Send+Sync>>>,
     }
     impl Storage {
         pub fn new() -> Self {
@@ -17,7 +17,7 @@ mod storage {
         }
         pub fn insert<T>(&self, name: u64, _value: T)
         where
-            T: Any,
+            T: Any +Send+Sync,
         {
             let value = Arc::new(_value);
             let mut write_guard = self.data.write().unwrap();
@@ -25,18 +25,22 @@ mod storage {
         }
         pub fn get<V>(&self, name: &u64) -> Option<Arc<V>>
         where
-            V: Any,
+            V: Any +Send +Sync,
         {
             let read_guard = self.data.read().unwrap();
             match read_guard.get(name) {
                 Some(value) => {
                     //Any 类型可以判断类型
                     if value.is::<V>() {
-                        unsafe {
-                            // let c = Arc::into_raw(value.clone());
-                            //因为这里Arc::into_raw(value.clone())返回的是*const dyn Any,所以需要强转。
-                            Some(Arc::from_raw(Arc::into_raw(value.clone()) as *const V))
-                        }
+                        let arc_value = value.clone();
+                        let arc = arc_value.downcast::<V>().unwrap();
+                        Some(arc)
+                        //用下面这个unsafe也可以
+                        // unsafe {
+                        //     // let c = Arc::into_raw(value.clone());
+                        //     //因为这里Arc::into_raw(value.clone())返回的是*const dyn Any,所以需要强转。
+                        //     Some(Arc::from_raw(Arc::into_raw(value.clone()) as *const V))
+                        // }
                     } else {
                         None
                     }
