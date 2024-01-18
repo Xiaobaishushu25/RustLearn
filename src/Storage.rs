@@ -5,6 +5,7 @@ mod storage {
     use std::collections::HashMap;
     use std::fmt::Display;
     use std::sync::{Arc, RwLock};
+    use crate::Storage::{RED, WebEvent};
 
     pub struct Storage {
         data: RwLock<HashMap<u64, Arc<dyn Any+Send+Sync>>>,
@@ -64,5 +65,15 @@ mod storage {
         println!("{:?}", option2); //Some("sad")
         print_type_of(&option1); //core::option::Option<alloc::sync::Arc<&str>> 可以看出确实是有类型信息的
         print_type_of(&option2); //core::option::Option<alloc::sync::Arc<alloc::string::String>>
+        let event = WebEvent::Red(11, 2, 3);
     }
 }
+enum WebEvent {
+    PageLoad,
+    PageUnload,
+    KeyPress(char),
+    Paste(String),
+    Click { x: i64, y: i64 },
+    Red(u8,u8,u8)
+}
+const RED: WebEvent = WebEvent::Red(11, 2, 3);
