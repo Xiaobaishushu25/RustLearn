@@ -1,11 +1,11 @@
 ///一个以u64为key，任意类型为值的map
 mod storage {
+    use crate::Storage::{WebEvent, RED};
     use std::any;
     use std::any::Any;
     use std::collections::HashMap;
     use std::fmt::Display;
     use std::sync::{Arc, RwLock};
-    use crate::Storage::{RED, WebEvent};
 
     pub struct Storage {
         data: RwLock<HashMap<u64, Arc<dyn Any + Send + Sync>>>,
@@ -40,7 +40,7 @@ mod storage {
                         // unsafe {
                         //     // let c = Arc::into_raw(value.clone());
                         //     //因为这里Arc::into_raw(value.clone())返回的是*const dyn Any,所以需要强转。
-                            Some(Arc::from_raw(Arc::into_raw(value.clone()) as *const V))
+                        //     Some(Arc::from_raw(Arc::into_raw(value.clone()) as *const V))
                         // }
                     } else {
                         None
@@ -74,6 +74,6 @@ enum WebEvent {
     KeyPress(char),
     Paste(String),
     Click { x: i64, y: i64 },
-    Red(u8,u8,u8)
+    Red(u8, u8, u8),
 }
 const RED: WebEvent = WebEvent::Red(11, 2, 3);
