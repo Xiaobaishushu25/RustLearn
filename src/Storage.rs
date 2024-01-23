@@ -1,10 +1,9 @@
 ///一个以u64为key，任意类型为值的map
 mod storage {
-    use crate::Storage::{WebEvent, RED};
+    use crate::Storage::WebEvent;
     use std::any;
     use std::any::Any;
     use std::collections::HashMap;
-    use std::fmt::Display;
     use std::sync::{Arc, RwLock};
 
     pub struct Storage {

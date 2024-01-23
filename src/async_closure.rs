@@ -10,7 +10,6 @@ fn create_db() {
 }
 #[cfg(test)]
 mod tests {
-    use super::*;
     #[test]
     fn test_log() {
         let x: Result<i32, &'static str> = Err("test");
