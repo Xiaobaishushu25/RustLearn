@@ -110,6 +110,13 @@ impl Rectangle{
     fn create_square(size:u32) -> Rectangle{
         Rectangle{width:size, height:size}
     }
+
+    //Rust 中的字符串字面量（string literals）的类型是&'static str，其中 'static 是指字符串字面量的生命周期是静态的，
+    // 即在整个程序的运行期间都有效。因此，返回这样一个引用不会导致悬垂引用或生命周期问题，编译器会认为这是合法的
+    //这里的str要求生命周期至少比self长
+    fn get_content(&self) -> &str{
+        ""
+    }
 }
 impl Clone for Rectangle{
     fn clone(&self) -> Self {
