@@ -1,3 +1,5 @@
+use image::ImageBuffer;
+
 #[test]
 fn test_i32() {
     let x: i32 = 123456789;
